@@ -1,9 +1,9 @@
 # SocialSanjal
 
-A streamlined social media platform, taking inspiration from popular platforms like Instagram, but with a simplified touch. Developed using the MERN stack, the app offers essential features tailored to deliver a smooth user experience.
+A streamlined social media platform, taking inspiration from popular platforms like Instagram, but with a simplified touch. Developed using the MySQL, node and react, the app offers essential features tailored to deliver a smooth user experience.
 
-![SocialSanjal logo or screenshot](client/public/assets/DarkMode.png) 
-![SocialSanjal logo or screenshot](client/public/assets/post.png) 
+<!-- ![SocialSanjal logo or screenshot](client/public/assets/DarkMode.png) 
+![SocialSanjal logo or screenshot](client/public/assets/post.png)  -->
 
 
 ## Features
@@ -37,18 +37,18 @@ A streamlined social media platform, taking inspiration from popular platforms l
 
 - **Frontend**: React (with SCSS)
 - **Backend**: Node.js with Express
-- **Database**: MongoDB
+- **Database**: MySQL
 - **Authentication**: JSON Web Tokens (JWT)
 - **Password Hashing**: bcrypt
 
 ## Installation & Setup
 
-1. Clone the repository: `git clone https://github.com/BabaYaGa74/SocialMediaApp.git`
-2. Navigate to the directory: `cd SocialMediaApp`
+1. Clone the repository: `git clone https://github.com/BabaYaGa74/social-media.git`
+2. Navigate to the directory: `cd social-media`
 3. Install the dependencies: `npm install`
 4. Start the development server: `npm start`
 
-**Note**: Ensure you have set up the environment variables for MongoDB, JWT and VITE_API_ENDPOINT
+**Note**: Ensure you have set up the environment variables for MySQL, JWT and VITE_API_ENDPOINT
 
 ## Future Enhancements
 
