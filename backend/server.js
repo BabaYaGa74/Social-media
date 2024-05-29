@@ -16,12 +16,10 @@ const storyRoutes = require("./routes/storyRoutes");
 const followRoutes = require("./routes/followRoutes");
 
 const __basedir = path.resolve(process.cwd());
-
 app.use((req, res, next) => {
   console.log("Request URL:", req.url);
   next();
 });
-
 app.use("/images", express.static(__basedir + "/images"));
 app.use("/stories", express.static(__basedir + "/stories"));
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
