@@ -78,7 +78,6 @@ const singlePost = asyncHandler(async (req, res) => {
 //@access private
 const userPost = asyncHandler(async (req, res) => {
   const { userId } = req.params;
-
   const postDetail = await PostQuery.getUserPost(userId);
   if (postDetail) {
     res.status(200).json({ message: "User Post found!", postDetail });
@@ -104,7 +103,7 @@ const getPosts = asyncHandler(async (req, res) => {
 
   const allPosts = await PostQuery.getAllPosts();
   if (allPosts) {
-    res.status(200).json({ message: "all Post found!", allPosts });
+    res.status(200).json({ message: "all Post found!", allPosts});
   } else {
     res.status(400);
     throw new Error("Failed to fetch posts");
