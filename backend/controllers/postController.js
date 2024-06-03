@@ -26,8 +26,8 @@ const createPost = asyncHandler(async (req, res) => {
 //@access private
 const updatePost = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { desc, photo, username, userId } = req.body;
-  const content = { desc, photo, username, userId };
+  const { description, photo, username, userId } = req.body;
+  const content = { description, photo, username, userId };
 
   const updatedPost = await PostQuery.getPostByIdAndUpdate(id, content);
   if (updatedPost) {
@@ -63,7 +63,6 @@ const deletePost = asyncHandler(async (req, res) => {
 //@access private
 const singlePost = asyncHandler(async (req, res) => {
   const { id } = req.params;
-
   const postDetail = await PostQuery.getPostById(id);
   if (postDetail) {
     res.status(200).json({ message: "Post found!", postDetail });
