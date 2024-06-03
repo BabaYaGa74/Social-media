@@ -55,7 +55,7 @@ const getStory = asyncHandler(async (req, res) => {
   throw new Error("Error occured while fetching stories");
 });
 
-//@desc  Gets the single story
+//@desc  Gets single story
 //@route  GET /story/:userId
 //@access Private
 const singleStory = asyncHandler(async (req, res) => {
