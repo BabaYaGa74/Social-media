@@ -31,22 +31,35 @@ const unfollowUser = asyncHandler(async (req, res) => {
 
 const getFollowers = asyncHandler(async (req, res) => {
   const { userId } = req.params;
-  const followers = await FollowerQuery.getFollowers(userId);
-  const following = await FollowerQuery.getFollowings(userId);
+  const followersObj = await FollowerQuery.getFollowers(userId);
+  const followingObj = await FollowerQuery.getFollowings(userId);
+
+  const followers = followersObj.map((follower) => follower.follower_id)
+  const followings = followingObj.map((following) => following.user_id)
+  
   res
     .status(200)
-    .json({ message: "These are the followers", followers, following });
+    .json({ message: "These are the followers", followers, followings });
 });
 
 const getFollowersDetails = asyncHandler(async (req, res) => {
   const followersIds = req.body.followersIds;
   const followingIds = req.body.followingIds;
+  let followersData = [];
+  let followingData = [];
+
+  if(followersIds){
+   followersData = await FollowerQuery.getDetails(followersIds);
+  }
+  if(followingIds){
+   followingData = await FollowerQuery.getDetails(followingIds);
+  }
 
   console.log("Following IDs", followingIds);
   console.log("Followers IDs", followersIds);
 
-  const followersData = await FollowerQuery.getDetails(followersIds);
-  const followingData = await FollowerQuery.getDetails(followingIds);
+  console.log("FOLLOWERS DATA: ", followersData)
+  console.log("FOLLOWING DATA: ",followingData)
   res.status(200).json({ followersData, followingData });
 });
 
