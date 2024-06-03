@@ -93,6 +93,21 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
+
+
+
+const getAllUsers = asyncHandler(async(req, res) => {
+ const users = await UserQuery.getAllUsers();
+ if(users){
+  res.status(200).json({users:users});
+ }else{
+  res.status(400);
+  throw new Error("ERROR OCCURRED");
+ }
+
+})
+
+
 //@desc   Changes the existing password
 //@routes PUT /api/users/user/pass/:id
 //@access private
@@ -100,12 +115,14 @@ const changePassword = asyncHandler(async (req, res) => {
   const { id } = req.params;
   let { password, newPassword } = req.body;
 
-  const user = await UserQuery.findById(id);
+  const user = await UserQuery.getUserById(id);
+  console.log("USER: ", user);
   if (!user) {
     res.status(404);
     throw new Error("User Doesn't Exists");
   }
   const matched = await AuthQuery.matchPassword(user.password, password);
+  console.log("MATCHED: ", matched);
 
   if (user && matched) {
     const salt = await bcrypt.genSalt(10);
@@ -116,6 +133,7 @@ const changePassword = asyncHandler(async (req, res) => {
   }
 
   const updatePassword = await UserQuery.updatePassword(id, newPassword);
+  console.log("UPDATED PASSWORD: ", updatePassword)
   if (updatePassword) {
     res.status(200).json(updatePassword);
   } else {
@@ -129,4 +147,5 @@ module.exports = {
   updateUser,
   deleteUser,
   changePassword,
+  getAllUsers,
 };
