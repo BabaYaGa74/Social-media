@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 
+//Token is not generated properly 
+
 const generateToken = (res, userId, username, picture, uname) => {
   const token = jwt.sign(
     { userId, username, picture, uname },
