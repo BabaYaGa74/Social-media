@@ -37,6 +37,8 @@ app.use("/api/likes", likeRoutes);
 app.use("/api/user", followRoutes);
 
 app.use(errorHandler);
+//Find out the error here
 // app.use(NotFound);
 
 app.listen(port, () => console.log(`Server is running on: ${port}..`));
+
