@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const generateToken = require("../utils/generateToken");
 const jwt = require("jsonwebtoken");
-const AuthQuery = require("../models/authQuery")
+const AuthQuery = require("../queries/authQuery")
 
 //@desc   Registers the user
 //@routes POST /api/auth/register
@@ -17,7 +17,6 @@ const registerUser = asyncHandler(async (req, res) => {
   }
   const user = await AuthQuery.createUser({ username, name, email, password, picture });
   if (user) {
-    generateToken(res, user.id, user.username, user.picture, user.name);
     res.status(201).json({
       message: "User created Successfully!",
       userId: user.id,
@@ -44,7 +43,7 @@ const loginUser = asyncHandler(async (req, res) => {
   const matched = await AuthQuery.matchPassword(user.password, password);
 
   if (user && matched) {
-    generateToken(res, user.id, user.username, user.picture, user.name);
+    generateToken(res, user.id, user.username, user.picture,user.coverPicture, user.name );
     res.status(200).json(user);
   } else {
     res.status(400);
@@ -71,6 +70,7 @@ const getUser = asyncHandler(async (req, res) => {
   let token = req.cookies.jwt;
   jwt.verify(token, process.env.JWT_SECRET, {}, (err, data) => {
     if (err) return res.status(404).json(err);
+    console.log("TOKEN DATA: ", data)
     res.status(200).json(data);
   });
 });
