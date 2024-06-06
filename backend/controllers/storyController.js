@@ -1,6 +1,6 @@
 const uploadStory = require("../middlewares/storiesMiddleware");
 const asyncHandler = require("express-async-handler");
-const StoryQuery = require("../models/storyQuery");
+const StoryQuery = require("../queries/storyQuery");
 
 const storyUpload = async (req, res) => {
   try {
@@ -50,9 +50,10 @@ const getStory = asyncHandler(async (req, res) => {
   const allStories = await StoryQuery.getAllStory();
   if (allStories) {
     res.status(200).json(allStories);
+  }else{
+    res.status(400);
+    throw new Error("Error occured while fetching stories");
   }
-  res.status(400);
-  throw new Error("Error occured while fetching stories");
 });
 
 //@desc  Gets single story
@@ -63,9 +64,10 @@ const singleStory = asyncHandler(async (req, res) => {
   const foundStory = await StoryQuery.getStoryByUserId(userId);
   if (foundStory) {
     res.status(200).json(foundStory);
+  }else{
+    res.status(400);
+    throw new Error("Error occured while fetching story");
   }
-  res.status(400);
-  throw new Error("Error occured while fetching story");
 });
 
 //@desc  Deletes the single story
@@ -76,9 +78,10 @@ const deleteStory = asyncHandler(async (req, res) => {
   const foundStory = await StoryQuery.deleteStoryById(id);
   if (foundStory) {
     res.status(200).json(foundStory);
+  }else{
+    res.status(400);
+    throw new Error("Error occured while deleting story");
   }
-  res.status(400);
-  throw new Error("Error occured while deleting story");
 });
 
 module.exports = {
