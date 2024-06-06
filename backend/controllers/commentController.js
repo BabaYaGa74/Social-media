@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const CommentQuery = require("../models/commentQuery");
+const CommentQuery = require("../queries/commentQuery");
 
 //@desc   Creates the new comment
 //@routes POST /api/comment/create
