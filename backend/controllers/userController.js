@@ -1,8 +1,9 @@
 const asyncHandler = require("express-async-handler");
-const UserQuery = require("../models/userQuery");
+const UserQuery = require("../queries/userQuery");
 const bcrypt = require("bcryptjs");
 const generateToken = require("../utils/generateToken");
-const AuthQuery = require("../models/authQuery");
+const AuthQuery = require("../queries/authQuery");
+const protect = require("../middlewares/authMiddleware");
 
 //@desc   Gets the user
 //@routes GET /api/users/user/:id
@@ -29,44 +30,44 @@ const getUser = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   let {
-    username,
-    password,
     name,
-    email,
+    username,
     picture,
     coverPicture,
-    website,
-    instagram,
     facebook,
-    country,
+    instagram,
   } = req.body;
-  if (password) {
-    const salt = await bcrypt.genSalt(10);
-    password = await bcrypt.hash(password, salt);
-  }
-  const user = await UserQuery.findByIdAndUpdate(
+
+  const user = await UserQuery.getUserByIdAndUpdate(
     id,
     {
       username,
       name,
-      password,
-      email,
       picture,
       coverPicture,
-      website,
-      instagram,
       facebook,
-      country,
+      instagram,
     }
   );
+
   if (user) {
-    generateToken(res, user.id, user.username, user.picture, user.name);
+    res.cookie("jwt", "", {
+      httpOnly: true,
+      maxAge: 0,
+      secure: process.env.NODE_ENV !== "development",
+    });
+
+    generateToken(res, user.id, user.username, user.picture,user.coverPicture, user.name);
+
     res.status(200).json({
       message: "User updated successfully",
       user,
     });
+
   } else {
-    res.status(400);
+    res.status(400).json({
+      error: "ERORR OCCURED"
+    });
     throw new Error("Error occured during update");
   }
 });
