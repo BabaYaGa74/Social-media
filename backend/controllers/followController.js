@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const FollowerQuery = require("../models/followerQuery");
+const FollowerQuery = require("../queries/followerQuery");
 
 const followUser = asyncHandler(async (req, res) => {
   const { userIdToFollow } = req.body;
@@ -9,7 +9,7 @@ const followUser = asyncHandler(async (req, res) => {
   if(insertion) {
     res
       .status(200)
-      .json({ message: "Followed successfully"});
+      .json({ message: "Followed successfully",id:insertion.insertId});
   } else {
     res
       .status(200)
@@ -25,7 +25,7 @@ const unfollowUser = asyncHandler(async (req, res) => {
   if(deleted){
     res
       .status(200)
-      .json({ message: "Unfollowed successfully"});
+      .json({ message: "Unfollowed successfully", id:followerId });
   }
 });
 
@@ -45,21 +45,18 @@ const getFollowers = asyncHandler(async (req, res) => {
 const getFollowersDetails = asyncHandler(async (req, res) => {
   const followersIds = req.body.followersIds;
   const followingIds = req.body.followingIds;
-  let followersData = [];
-  let followingData = [];
 
-  if(followersIds){
+  var followersData = [];
+  var followingData = [];
+
+  if(followersIds.length > 0){
    followersData = await FollowerQuery.getDetails(followersIds);
   }
-  if(followingIds){
+
+  if(followingIds.length > 0){
    followingData = await FollowerQuery.getDetails(followingIds);
   }
 
-  console.log("Following IDs", followingIds);
-  console.log("Followers IDs", followersIds);
-
-  console.log("FOLLOWERS DATA: ", followersData)
-  console.log("FOLLOWING DATA: ",followingData)
   res.status(200).json({ followersData, followingData });
 });
 
