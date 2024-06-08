@@ -1,7 +1,8 @@
 const asyncHandler = require("express-async-handler");
 const generateToken = require("../utils/generateToken");
 const jwt = require("jsonwebtoken");
-const AuthQuery = require("../queries/authQuery")
+const AuthQuery = require("../queries/authQuery");
+const validateInput = require("../utils/validation");
 
 //@desc   Registers the user
 //@routes POST /api/auth/register
@@ -9,23 +10,36 @@ const AuthQuery = require("../queries/authQuery")
 const registerUser = asyncHandler(async (req, res) => {
   const { username, name, email, password, picture } = req.body;
 
+  const input = { username, name, email, password, picture }
+  const validationResponse = validateInput(input);
+  if(!validationResponse.isValid){
+    return res.json({
+      success: false,
+      message:validationResponse.message
+    })
+  }
+
   const userExists = await AuthQuery.findUser(email);
   if (userExists) {
-    console.log("INSIDE THIS");
-    res.status(400);
-    throw new Error("User already Exists");
+    return res.json({
+      success:false,
+      message:"User already Exists"
+    })
   }
   const user = await AuthQuery.createUser({ username, name, email, password, picture });
   if (user) {
     res.status(201).json({
+      success: true,
       message: "User created Successfully!",
       userId: user.id,
       username: user.username,
       email: user.email,
     });
   } else {
-    res.status(400);
-    throw new Error("Registration Failed!");
+    res.status(400).json({
+      success:false,
+      message:"Registration Failed!",
+    })
   }
 });
 
@@ -68,11 +82,11 @@ const logoutUser = asyncHandler(async (req, res) => {
 //@access private
 const getUser = asyncHandler(async (req, res) => {
   let token = req.cookies.jwt;
-  jwt.verify(token, process.env.JWT_SECRET, {}, (err, data) => {
-    if (err) return res.status(404).json(err);
-    console.log("TOKEN DATA: ", data)
-    res.status(200).json(data);
-  });
+    jwt.verify(token, process.env.JWT_SECRET, {}, (err, data) => {
+      if (err) return res.status(404).json(err);
+      console.log("TOKEN DATA: ", data)
+      res.status(200).json(data);
+    });
 });
 
 module.exports = {
