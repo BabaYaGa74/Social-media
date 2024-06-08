@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const PostQuery = require("../models/postQuery");
+const PostQuery = require("../queries/postQuery");
 
 //@desc   Creates new post
 //@routes POST /api/post/createPost
@@ -64,6 +64,7 @@ const deletePost = asyncHandler(async (req, res) => {
 const singlePost = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const postDetail = await PostQuery.getPostById(id);
+  console.log("POST DETAILS: ", postDetail)
   if (postDetail) {
     res.status(200).json({ message: "Post found!", postDetail });
   } else {
