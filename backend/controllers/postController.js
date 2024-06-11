@@ -95,18 +95,37 @@ const userPost = asyncHandler(async (req, res) => {
 // @routes GET /api/post/
 // @access private
 const getPosts = asyncHandler(async (req, res) => {
-  // const query = req.query;
-
-  // const searchFilter = {
-  //   desc: { $regex: query.search, $options: "i" },
-  // };
-
   const allPosts = await PostQuery.getAllPosts();
+  console.log("ALL: ", allPosts);
   if (allPosts) {
     res.status(200).json({ message: "all Post found!", allPosts});
   } else {
     res.status(400);
     throw new Error("Failed to fetch posts");
+  }
+});
+
+const repost = asyncHandler(async (req, res) => {
+ const { userId, postId } = req.body;
+
+  try {
+    const post = await PostQuery.getPostById(postId);
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    // Check if the user has already reposted this post
+    const reposted = await PostQuery.checkIfReposted(userId,postId);
+    if (reposted) {
+      return res.status(400).json({ message: 'You have already reposted this post' });
+    }
+
+    // Insert the repost record
+    await PostQuery.insertRepost(userId,postId);
+    res.status(201).json({ message: 'Post reposted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 });
 
@@ -129,5 +148,5 @@ module.exports = {
   singlePost,
   getPosts,
   userPost,
-  // sharePost,
+  repost,
 };
