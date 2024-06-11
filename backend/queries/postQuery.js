@@ -19,19 +19,58 @@ const createPost = (postInfo)=>{
 })}
 const getAllPosts = ()=>{
   return new Promise((resolve, reject) => {
+  // const q = `
+  //   SELECT
+  //     p.id,
+  //     p.description,
+  //     p.photo,
+  //     p.created_at,
+  //     p.updated_at,
+  //     p.userId,
+  //     u.username,
+  //     u.picture AS profilePic
+  //   FROM
+  //     post p
+  //   INNER JOIN user u ON u.id = p.userId
+  // `;
+
   const q = `
-    SELECT
-      p.id,
-      p.description,
-      p.photo,
-      p.created_at,
-      p.updated_at,
-      p.userId,
-      u.username,
-      u.picture AS profilePic
-    FROM
-      post p
-    INNER JOIN user u ON u.id = p.userId
+  SELECT * FROM (
+      SELECT
+        p.id, 
+        p.description, 
+        p.photo,
+        p.created_at, 
+        p.updated_at, 
+        p.userId,
+        u.username,
+        u.picture As profilePic,
+        NULL AS reposted_by_id, 
+        NULL AS reposted_by, 
+        NULL AS reposted_at
+      FROM post p
+      LEFT JOIN user u ON u.id = p.userId
+
+      UNION ALL
+
+      SELECT 
+        p.id, 
+        p.description, 
+        p.photo,
+        p.created_at, 
+        p.updated_at, 
+        p.userId,
+        u.username,
+        u.picture As profilePic,
+        r.user_id AS reposted_by_id, 
+        ru.username AS reposted_by, 
+        r.reposted_at 
+      FROM post p
+      INNER JOIN reposts r ON p.id = r.post_id
+      LEFT JOIN user u ON u.id = p.userId
+      LEFT JOIN user ru ON r.user_id = ru.id
+  ) AS combined_posts
+      ORDER BY COALESCE(reposted_at, created_at) 
   `;
 
   db.query(q, [], (err, data) => {
@@ -126,11 +165,33 @@ const deletePostById = (postId) => {
   });
 };
 
+const checkIfReposted = (userId, postId) => {
+  return new Promise((resolve, reject) => {
+    const q = "SELECT * FROM reposts WHERE user_id = ? AND post_id = ?";
+    db.query(q, [userId,postId], (err, data) => {
+      if (err) reject(err);
+      if (data.length === 0) resolve(false);
+      reject(true);
+    });
+  });
+};
+
+const insertRepost = (userId, postId) => {
+  return new Promise((resolve, reject) => {
+    const q = "INSERT INTO reposts (user_id, post_id) VALUES (?, ?)";
+    db.query(q, [userId, postId], (err, data) => {
+        if (err) reject(err)
+        resolve(data);
+    });
+  })}
+
 module.exports = {
     createPost,
     getPostById,
     deletePostById,
     getPostByIdAndUpdate,
     getUserPost,
-    getAllPosts
+    getAllPosts,
+    insertRepost,
+    checkIfReposted
 }
