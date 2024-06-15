@@ -24,6 +24,7 @@ const getUserByEmail = (email)=>{
 const getUserByIdAndUpdate = async(userId, userInfo)=>{
   return new Promise((resolve, reject) => {
     const q = "UPDATE user SET `username`=?,`name`=?,`picture`=?, `coverPicture`=?, `instagram`=?, `facebook`=? WHERE id=? ";
+    console.log("In query")
     db.query(
       q,
       [
@@ -38,7 +39,10 @@ const getUserByIdAndUpdate = async(userId, userInfo)=>{
       (err, data) => {
         if (err) reject(err)
         if (data.affectedRows > 0){
-          getUserById(userId).then(user => resolve(user))
+          getUserById(userId).then(user => {
+            console.log("IN USER: ", user);
+            resolve(user)
+          })
           .catch(err => reject(err))
         }
         reject(false);
