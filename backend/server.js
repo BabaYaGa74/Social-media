@@ -2,6 +2,16 @@ const express = require("express");
 const app = express();
 require("dotenv").config();
 const cors = require("cors");
+
+const socketIo = require("socket.io");
+const http = require("http");
+const server = http.createServer(app);
+const io = socketIo(server,{
+  cors:{
+    origin: '*',
+  }
+});
+
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const port = process.env.PORT || 5000;
@@ -14,12 +24,17 @@ const likeRoutes = require("./routes/likeRoutes");
 const fileRoutes = require("./routes/fileRoutes");
 const storyRoutes = require("./routes/storyRoutes");
 const followRoutes = require("./routes/followRoutes");
+const MsgController = require("./controllers/messageController");
+
 
 const __basedir = path.resolve(process.cwd());
 app.use((req, res, next) => {
   console.log("Request URL:", req.url);
   next();
 });
+
+new MsgController(io);
+
 app.use("/images", express.static(__basedir + "/images"));
 app.use("/stories", express.static(__basedir + "/stories"));
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
@@ -36,8 +51,9 @@ app.use("/api/post", postRoutes);
 app.use("/api/likes", likeRoutes);
 app.use("/api/user", followRoutes);
 
+
 app.use(errorHandler);
 //Find out the error here
 // app.use(NotFound);
 
-app.listen(port, () => console.log(`Server is running on: ${port}..`));
+server.listen(port, () => console.log(`Server is running on: ${port}..`));
