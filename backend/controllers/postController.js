@@ -87,10 +87,6 @@ const userPost = asyncHandler(async (req, res) => {
   }
 });
 
-
-
-///TODO: WATCH WHERE IT IS CALLING AND DO ALL THE SHENANIGANS
-
 // @desc   Gets all the posts
 // @routes GET /api/post/
 // @access private
@@ -105,29 +101,31 @@ const getPosts = asyncHandler(async (req, res) => {
   }
 });
 
-const repost = asyncHandler(async (req, res) => {
- const { userId, postId } = req.body;
+//TODO: Try reimplementing this concept in the future
 
-  try {
-    const post = await PostQuery.getPostById(postId);
-    if (!post) {
-      return res.status(404).json({ message: 'Post not found' });
-    }
+// const repost = asyncHandler(async (req, res) => {
+//  const { userId, postId } = req.body;
 
-    // Check if the user has already reposted this post
-    const reposted = await PostQuery.checkIfReposted(userId,postId);
-    if (reposted) {
-      return res.status(400).json({ message: 'You have already reposted this post' });
-    }
+//   try {
+//     const post = await PostQuery.getPostById(postId);
+//     if (!post) {
+//       return res.status(404).json({ message: 'Post not found' });
+//     }
 
-    // Insert the repost record
-    await PostQuery.insertRepost(userId,postId);
-    res.status(201).json({ message: 'Post reposted successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-});
+//     // Check if the user has already reposted this post
+//     const reposted = await PostQuery.checkIfReposted(userId,postId);
+//     if (reposted) {
+//       return res.status(400).json({ message: 'You have already reposted this post' });
+//     }
+
+//     // Insert the repost record
+//     await PostQuery.insertRepost(userId,postId);
+//     res.status(201).json({ message: 'Post reposted successfully' });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'Internal server error' });
+//   }
+// });
 
 // const sharePost = asyncHandler(async (req, res) => {
 //   const { id } = req.params;
@@ -148,5 +146,5 @@ module.exports = {
   singlePost,
   getPosts,
   userPost,
-  repost,
+  // repost,
 };
