@@ -3,7 +3,7 @@ const UserQuery = require("../queries/userQuery");
 const bcrypt = require("bcryptjs");
 const generateToken = require("../utils/generateToken");
 const AuthQuery = require("../queries/authQuery");
-const protect = require("../middlewares/authMiddleware");
+const {validatePassword} = require("../utils/validation");
 
 //@desc   Gets the user
 //@routes GET /api/users/user/:id
@@ -25,11 +25,11 @@ const getUser = asyncHandler(async (req, res) => {
 });
 
 //@desc   Updates the existing user
-//@routes PUT /api/users/user/:id
+//@routes PUT /api/users/user/
 //@access private
 const updateUser = asyncHandler(async (req, res) => {
-  const { id } = req.params;
   let {
+    id,
     name,
     username,
     picture,
@@ -37,6 +37,8 @@ const updateUser = asyncHandler(async (req, res) => {
     facebook,
     instagram,
   } = req.body;
+
+  console.log("IN controller")
 
   const user = await UserQuery.getUserByIdAndUpdate(
     id,
@@ -50,7 +52,13 @@ const updateUser = asyncHandler(async (req, res) => {
     }
   );
 
-  if (user) {
+    if (!user) {
+      res.status(400).json({
+        error: "ERORR OCCURED"
+      });
+      throw new Error("Error occured during update");
+    } 
+
     res.cookie("jwt", "", {
       httpOnly: true,
       maxAge: 0,
@@ -59,17 +67,10 @@ const updateUser = asyncHandler(async (req, res) => {
 
     generateToken(res, user.id, user.username, user.picture,user.coverPicture, user.name);
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "User updated successfully",
       user,
     });
-
-  } else {
-    res.status(400).json({
-      error: "ERORR OCCURED"
-    });
-    throw new Error("Error occured during update");
-  }
 });
 
 //@desc   Deletes the existing user
@@ -116,6 +117,14 @@ const changePassword = asyncHandler(async (req, res) => {
   const { id } = req.params;
   let { password, newPassword } = req.body;
 
+  const validationResponse = validatePassword(newPassword);
+  if(!validationResponse){
+    return res.json({
+      success: false,
+      message: "Invalid Password!",
+    })
+  }
+
   const user = await UserQuery.getUserById(id);
   console.log("USER: ", user);
   if (!user) {
@@ -136,7 +145,10 @@ const changePassword = asyncHandler(async (req, res) => {
   const updatePassword = await UserQuery.updatePassword(id, newPassword);
   console.log("UPDATED PASSWORD: ", updatePassword)
   if (updatePassword) {
-    res.status(200).json(updatePassword);
+    res.status(200).json({
+      success:true,
+      pass: updatePassword
+    });
   } else {
     res.status(400);
     throw new Error("Cannot update User");
