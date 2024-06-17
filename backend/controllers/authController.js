@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const generateToken = require("../utils/generateToken");
 const jwt = require("jsonwebtoken");
 const AuthQuery = require("../queries/authQuery");
-const validateInput = require("../utils/validation");
+const {validateInput} = require("../utils/validation");
 
 //@desc   Registers the user
 //@routes POST /api/auth/register
