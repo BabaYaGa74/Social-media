@@ -2,8 +2,11 @@
 
 A streamlined social media platform, taking inspiration from popular platforms like Instagram, but with a simplified touch. Developed using the MySQL, node and react, the app offers essential features tailored to deliver a smooth user experience.
 
-<!-- ![SocialSanjal logo or screenshot](client/public/assets/DarkMode.png) 
-![SocialSanjal logo or screenshot](client/public/assets/post.png)  -->
+![Register](client/public/assets/register.png?raw=true "REGISTER") 
+![Profile](client/public/assets/profile.png?raw=true "PROFILE") 
+![Story](client/public/assets/story.png?raw=true "Story") 
+![updateProfile](client/public/assets/updateProfile.png?raw=true "UPDATE_PROFILE") 
+![CHAT](client/public/assets/chat.png?raw=true "CHAT") 
 
 
 ## Features
@@ -24,6 +27,7 @@ A streamlined social media platform, taking inspiration from popular platforms l
 - **Story Feature**: Users can share stories using pictures.
 
 - **Profile & Social Interaction**:
+  - Chat with other users.
   - View and edit user profiles.
   - Follow and unfollow other users.
   - View lists of followers and following.
