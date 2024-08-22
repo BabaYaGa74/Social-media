@@ -1,4 +1,4 @@
-# SocialSanjal
+# CONNECTIFY
 
 A streamlined social media platform, taking inspiration from popular platforms like Instagram, but with a simplified touch. Developed using the MySQL, node and react, the app offers essential features tailored to deliver a smooth user experience.
 
